@@ -43,7 +43,7 @@ final class DriftReport
     public function summary(): string
     {
         if ($this->isClean()) {
-            return sprintf('v%s: all %d route(s) match the spec.', $this->version, count($this->matched));
+            return sprintf('%s: all %d route(s) match the spec.', $this->version, count($this->matched));
         }
 
         $parts = [];
@@ -56,6 +56,6 @@ final class DriftReport
             $parts[] = count($this->added) . ' undocumented';
         }
 
-        return sprintf('v%s: %s.', $this->version, implode(', ', $parts));
+        return sprintf('%s: %s.', $this->version, implode(', ', $parts));
     }
 }
