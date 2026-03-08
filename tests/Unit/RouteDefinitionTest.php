@@ -48,4 +48,28 @@ class RouteDefinitionTest extends TestCase
 
         $this->assertSame($appRoute->key(), $specRoute->key());
     }
+
+    #[DataProvider('openApiPathCases')]
+    public function test_open_api_path_preserves_param_names(string $input, string $expected): void
+    {
+        $route = new RouteDefinition('GET', $input);
+        $this->assertSame($expected, $route->openApiPath());
+    }
+
+    public static function openApiPathCases(): array
+    {
+        return [
+            'laravel style preserved'  => ['/v1/users/{user}',    '/v1/users/{user}'],
+            'express style converted'  => ['/v1/users/:id',        '/v1/users/{id}'],
+            'symfony style converted'  => ['/v1/users/<userId>',   '/v1/users/{userId}'],
+            'no params unchanged'      => ['/v1/users',            '/v1/users'],
+            'multiple params'          => ['/v1/a/{b}/c/:d',       '/v1/a/{b}/c/{d}'],
+        ];
+    }
+
+    public function test_raw_path_is_stored_unmodified(): void
+    {
+        $route = new RouteDefinition('GET', '/v1/users/:id');
+        $this->assertSame('/v1/users/:id', $route->rawPath);
+    }
 }
