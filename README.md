@@ -33,6 +33,7 @@ The service provider registers automatically. Console commands are registered wi
 ```bash
 php artisan accord:validate
 php artisan accord:version
+php artisan drift:coverage
 ```
 
 ---
@@ -58,7 +59,7 @@ Checks for drift between your live routes and your OpenAPI spec:
 
 ```bash
 php artisan accord:validate
-php artisan accord:validate --version=v2
+php artisan accord:validate --api-version=v2
 ```
 
 Output is a table showing each route's status. Exits with a non-zero code if any drift is detected — useful in CI pipelines to catch undocumented or removed routes before they ship.
@@ -77,7 +78,7 @@ Runs the full drift-analyse-changelog pipeline:
 
 ```bash
 php artisan accord:version
-php artisan accord:version --version=v1 --dry-run
+php artisan accord:version --api-version=v1 --dry-run
 php artisan accord:version --yes          # skip confirmation prompt
 ```
 
@@ -89,6 +90,29 @@ php artisan accord:version --yes          # skip confirmation prompt
 6. Prepends a changelog entry to `CHANGELOG.md`
 
 When drift introduces breaking changes (removed routes), the command also notes that a new URI version (`/v2/`) should be considered.
+
+### `drift:coverage`
+
+Checks that every registered route resolves to an existing controller class and method:
+
+```bash
+php artisan drift:coverage
+php artisan drift:coverage --api-version=v1
+```
+
+Output is a table showing each route's implementation status. Exits with a non-zero code if any routes are unimplemented, making it suitable for CI.
+
+```
+ Coverage       Method  Path               Action
+ IMPLEMENTED    GET     /api/v1/posts      App\Http\Controllers\V1\PostController@index
+ IMPLEMENTED    POST    /api/v1/posts      App\Http\Controllers\V1\PostController@store
+ MISSING        DELETE  /api/v1/posts/{id} App\Http\Controllers\V1\PostController@destroy
+ UNKNOWN        GET     /api/v1/ping       (closure)
+```
+
+- **IMPLEMENTED** — controller class and method both exist
+- **MISSING** — class or method cannot be found; the route would throw a server error if called
+- **UNKNOWN** — route uses a closure or has no resolvable action string
 
 ---
 
@@ -188,15 +212,18 @@ class MyFrameworkInspector implements RouteInspectorInterface
 
 ## CI integration
 
-Add `accord:validate` to your CI pipeline to catch drift before it reaches production:
+Add both commands to your CI pipeline:
 
 ```yaml
 # .github/workflows/ci.yml
 - name: Check API drift
   run: php artisan accord:validate
+
+- name: Check for unimplemented routes
+  run: php artisan drift:coverage
 ```
 
-A non-zero exit code will fail the build if any routes are undocumented or have been removed without updating the spec.
+`accord:validate` fails the build if any routes are undocumented or have been removed from the spec without a version bump. `drift:coverage` fails the build if any route's controller or method is missing — catching spec-first development gaps before they reach production.
 
 ---
 
