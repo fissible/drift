@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace Fissible\Drift\Drivers\Laravel\Providers;
 
 use Fissible\Accord\SpecSourceInterface;
-use Fissible\Accord\VersionExtractor;
 use Fissible\Drift\ChangelogGenerator;
+use Fissible\Drift\Console\CoverageCommand;
 use Fissible\Drift\Console\ValidateCommand;
 use Fissible\Drift\Console\VersionCommand;
+use Fissible\Drift\CoverageAnalyser;
 use Fissible\Drift\DriftDetector;
+use Fissible\Drift\Drivers\Laravel\Checkers\LaravelImplementationChecker;
 use Fissible\Drift\Drivers\Laravel\Inspectors\LaravelRouteInspector;
+use Fissible\Drift\ImplementationCheckerInterface;
 use Fissible\Drift\RouteInspectorInterface;
 use Fissible\Drift\VersionAnalyser;
 use Illuminate\Support\ServiceProvider;
@@ -31,7 +34,13 @@ class DriftServiceProvider extends ServiceProvider
             return new VersionAnalyser($this->app->make(SpecSourceInterface::class));
         });
 
-        $this->app->singleton(ChangelogGenerator::class, fn () => new ChangelogGenerator());
+        $this->app->singleton(ChangelogGenerator::class, fn () => new ChangelogGenerator);
+
+        $this->app->singleton(ImplementationCheckerInterface::class, fn () => new LaravelImplementationChecker);
+
+        $this->app->singleton(CoverageAnalyser::class, function () {
+            return new CoverageAnalyser($this->app->make(ImplementationCheckerInterface::class));
+        });
     }
 
     public function boot(): void
@@ -40,6 +49,7 @@ class DriftServiceProvider extends ServiceProvider
             $this->commands([
                 ValidateCommand::class,
                 VersionCommand::class,
+                CoverageCommand::class,
             ]);
         }
     }
