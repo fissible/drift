@@ -1,0 +1,47 @@
+{
+    "name": "fissible/drift",
+    "description": "API drift detection for PHP — compares live routes against OpenAPI specs and recommends version changes",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["openapi", "drift", "versioning", "validation", "laravel", "api"],
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../accord",
+            "options": {"symlink": true}
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "fissible/accord": "*@dev",
+        "symfony/console": "^6.0|^7.0",
+        "symfony/yaml": "^6.0|^7.0"
+    },
+    "require-dev": {
+        "nyholm/psr7": "^1.8",
+        "phpunit/phpunit": "^11.0"
+    },
+    "suggest": {
+        "illuminate/routing": "^10.0|^11.0|^12.0 — required for the Laravel driver"
+    },
+    "autoload": {
+        "psr-4": {
+            "Fissible\\Drift\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Fissible\\Drift\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Fissible\\Drift\\Drivers\\Laravel\\Providers\\DriftServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
