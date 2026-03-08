@@ -43,7 +43,12 @@ class LaravelRouteInspector implements RouteInspectorInterface
                     continue;
                 }
 
-                $routes[] = new RouteDefinition($method, '/' . ltrim($route->uri(), '/'));
+                $actionString = $route->getActionName();
+                $routes[] = new RouteDefinition(
+                    $method,
+                    '/' . ltrim($route->uri(), '/'),
+                    $actionString !== 'Closure' ? $actionString : null,
+                );
             }
         }
 

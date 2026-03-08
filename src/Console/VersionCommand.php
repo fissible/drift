@@ -34,20 +34,20 @@ class VersionCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addOption('version', null, InputOption::VALUE_REQUIRED, 'URI version to analyse (e.g. v1)', 'v1')
+            ->addOption('api-version', null, InputOption::VALUE_REQUIRED, 'URI version to analyse (e.g. v1)', 'v1')
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Preview changes without writing any files')
             ->addOption('yes', 'y', InputOption::VALUE_NONE, 'Skip confirmation prompt');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $version = $input->getOption('version');
+        $version = $input->getOption('api-version');
         $dryRun  = (bool) $input->getOption('dry-run');
         $yes     = (bool) $input->getOption('yes');
 
         $routes = array_values(array_filter(
             $this->inspector->getRoutes(),
-            fn($r) => str_starts_with($r->path, '/' . $version . '/') || $r->path === '/' . $version,
+            fn($r) => preg_match('/\/' . preg_quote($version, '/') . '(?:\/|$)/', $r->path),
         ));
 
         $report         = $this->detector->detect($routes, $version);

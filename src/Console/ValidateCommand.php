@@ -27,13 +27,13 @@ class ValidateCommand extends Command
 
     protected function configure(): void
     {
-        $this->addOption('version', null, InputOption::VALUE_OPTIONAL, 'Spec version to validate against (e.g. v1). Validates all detected versions if omitted.');
+        $this->addOption('api-version', null, InputOption::VALUE_OPTIONAL, 'Spec version to validate against (e.g. v1). Validates all detected versions if omitted.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $routes   = $this->inspector->getRoutes();
-        $versions = $this->detectVersions($routes, $input->getOption('version'));
+        $versions = $this->detectVersions($routes, $input->getOption('api-version'));
 
         if (empty($versions)) {
             $output->writeln('<comment>No versioned routes found. Nothing to validate.</comment>');
@@ -86,7 +86,7 @@ class ValidateCommand extends Command
 
         foreach ($routes as $route) {
             // Extract version from the route path directly
-            if (preg_match('/^\/v(\d+)(?:\/|$)/', $route->path, $m)) {
+            if (preg_match('/\/v(\d+)(?:\/|$)/', $route->path, $m)) {
                 $versions['v' . $m[1]] = true;
             }
         }
@@ -101,7 +101,7 @@ class ValidateCommand extends Command
 
         return array_values(array_filter(
             $routes,
-            fn($r) => preg_match('/^\/v' . $number . '(?:\/|$)/', $r->path),
+            fn($r) => preg_match('/\/v' . $number . '(?:\/|$)/', $r->path),
         ));
     }
 }

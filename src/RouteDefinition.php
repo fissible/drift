@@ -23,11 +23,15 @@ final class RouteDefinition
     public readonly string $method;
     public readonly string $path;
 
-    public function __construct(string $method, string $path)
+    /** Framework-specific action string (e.g. "App\Http\Controllers\UserController@store"). */
+    public readonly ?string $action;
+
+    public function __construct(string $method, string $path, ?string $action = null)
     {
         $this->method  = strtoupper($method);
         $this->rawPath = $path;
         $this->path    = self::normalisePath($path);
+        $this->action  = $action;
     }
 
     /**
