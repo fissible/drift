@@ -48,6 +48,7 @@ class LaravelRouteInspector implements RouteInspectorInterface
                     $method,
                     '/' . ltrim($route->uri(), '/'),
                     $actionString !== 'Closure' ? $actionString : null,
+                    $route->getName(),
                 );
             }
         }

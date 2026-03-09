@@ -72,4 +72,16 @@ class RouteDefinitionTest extends TestCase
         $route = new RouteDefinition('GET', '/v1/users/:id');
         $this->assertSame('/v1/users/:id', $route->rawPath);
     }
+
+    public function test_name_is_null_by_default(): void
+    {
+        $route = new RouteDefinition('GET', '/v1/users');
+        $this->assertNull($route->name);
+    }
+
+    public function test_name_is_stored_when_provided(): void
+    {
+        $route = new RouteDefinition('GET', '/v1/users', null, 'v1.users.index');
+        $this->assertSame('v1.users.index', $route->name);
+    }
 }

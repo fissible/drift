@@ -26,12 +26,16 @@ final class RouteDefinition
     /** Framework-specific action string (e.g. "App\Http\Controllers\UserController@store"). */
     public readonly ?string $action;
 
-    public function __construct(string $method, string $path, ?string $action = null)
+    /** Framework-specific route name (e.g. "v1.posts.index"). */
+    public readonly ?string $name;
+
+    public function __construct(string $method, string $path, ?string $action = null, ?string $name = null)
     {
         $this->method  = strtoupper($method);
         $this->rawPath = $path;
         $this->path    = self::normalisePath($path);
         $this->action  = $action;
+        $this->name    = $name;
     }
 
     /**
