@@ -43,7 +43,7 @@ class ChangelogGenerator
 
         // Insert after the first heading line
         $updated = preg_replace(
-            '/^(#[^\n]*\n)/m',
+            '/^(# [^\n]*\n)/m',
             "$1\n" . $entry . "\n",
             $existing,
             limit: 1,
