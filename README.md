@@ -5,9 +5,9 @@ OpenAPI drift detection and version analysis for PHP. Compares your live API rou
 Part of the [Fissible](https://github.com/fissible) suite. **Depends on:** fissible/accord (reads specs via SpecSourceInterface).
 
 ```
-  [forge]  ──────────────────────────────►  [accord]  ◄── [watch]
-  generate spec                            validate at      bolt-on cockpit
-      ▲                                    runtime │        (paid, requires all)
+  [forge]  ──────────────────────────────►  [accord]  ◄── [watch] ◄── [fault]
+  generate spec                            validate at      cockpit UI   exception
+      ▲                                    runtime │        (bolt-on)    tracking
       │                                            ▼
       └──────────────────────────────────  [drift]  ← you are here
                                            detect drift, bump version
