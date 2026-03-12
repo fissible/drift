@@ -2,7 +2,16 @@
 
 OpenAPI drift detection and version analysis for PHP. Compares your live API routes against their spec, recommends semver bumps, and generates changelogs.
 
-Part of the [Fissible](https://github.com/fissible) suite. New to Fissible? [Start with fissible/accord](https://github.com/fissible/accord) — it explains how the three packages work together.
+Part of the [Fissible](https://github.com/fissible) suite. **Depends on:** fissible/accord (reads specs via SpecSourceInterface).
+
+```
+  [forge]  ──────────────────────────────►  [accord]  ◄── [watch]
+  generate spec                            validate at      bolt-on cockpit
+      ▲                                    runtime │        (paid, requires all)
+      │                                            ▼
+      └──────────────────────────────────  [drift]  ← you are here
+                                           detect drift, bump version
+```
 
 ---
 
