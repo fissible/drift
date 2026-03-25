@@ -3,17 +3,17 @@
     "description": "API drift detection for PHP — compares live routes against OpenAPI specs and recommends version changes",
     "type": "library",
     "license": "MIT",
-    "keywords": ["openapi", "drift", "versioning", "validation", "laravel", "api"],
-    "repositories": [
+    "homepage": "https://github.com/fissible/drift",
+    "keywords": ["openapi", "drift", "semver", "api", "laravel"],
+    "authors": [
         {
-            "type": "path",
-            "url": "../accord",
-            "options": {"symlink": true}
+            "name": "Allen McCabe",
+            "role": "Developer"
         }
     ],
     "require": {
         "php": "^8.2",
-        "fissible/accord": "*@dev",
+        "fissible/accord": "^1.0",
         "symfony/console": "^6.0|^7.0",
         "symfony/yaml": "^6.0|^7.0"
     },
