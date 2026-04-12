@@ -36,6 +36,17 @@ class DriftServiceProvider extends ServiceProvider
 
         $this->app->singleton(ChangelogGenerator::class, fn () => new ChangelogGenerator);
 
+        $this->app->singleton(VersionCommand::class, function () {
+            return new VersionCommand(
+                $this->app->make(RouteInspectorInterface::class),
+                $this->app->make(DriftDetector::class),
+                $this->app->make(VersionAnalyser::class),
+                $this->app->make(ChangelogGenerator::class),
+                $this->app->make(SpecSourceInterface::class),
+                $this->app->basePath(),
+            );
+        });
+
         $this->app->singleton(ImplementationCheckerInterface::class, fn () => new LaravelImplementationChecker);
 
         $this->app->singleton(CoverageAnalyser::class, function () {
